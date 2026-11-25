@@ -1,0 +1,91 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        RedBlackTree tree = new RedBlackTree();
+        Random random = new Random();
+
+        System.out.println(" Червоно-чорне дерево ");
+        System.out.println("Оберіть режим наповнення:");
+        System.out.println("1. Випадкові числа (довільний порядок)");
+        System.out.println("2. Випадкові числа (відсортований порядок)");
+        System.out.println("3. Ручне введення з клавіатури");
+        System.out.print("Ваш вибір: ");
+
+        String choice = scanner.nextLine().trim();
+
+        switch (choice) {
+            case "1":
+                addRandomNumbers(tree, random, false);
+                break;
+            case "2":
+                addRandomNumbers(tree, random, true);
+                break;
+            case "3":
+                addManually(tree, scanner);
+                break;
+            default:
+                System.out.println("Невірний вибір. Використовуємо режим за замовчуванням (1).");
+                addRandomNumbers(tree, random, false);
+        }
+
+        tree.printTree();
+        tree.inorder();
+
+        System.out.print("\nВведіть число для видалення (Enter — пропустити): ");
+        String delInput = scanner.nextLine().trim();
+        if (!delInput.isEmpty()) {
+            try {
+                int key = Integer.parseInt(delInput);
+                tree.delete(key);
+                System.out.println("Після видалення " + key + ":");
+                tree.printTree();
+                tree.inorder();
+            } catch (NumberFormatException e) {
+                System.out.println("Некоректне число.");
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static void addRandomNumbers(RedBlackTree tree, Random random, boolean sort) {
+        int n = 10;
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = random.nextInt(100);
+        }
+
+        if (sort) {
+            Arrays.sort(arr);
+            System.out.println("Відсортований масив (порядок додавання): " + Arrays.toString(arr));
+        } else {
+            System.out.println("Масив у довільному порядку (порядок додавання): " + Arrays.toString(arr));
+        }
+
+        for (int num : arr) {
+            tree.insert(num);
+        }
+    }
+
+    private static void addManually(RedBlackTree tree, Scanner scanner) {
+        System.out.println("Введіть числа (через пробіл або по одному, порожній рядок — завершити):");
+        while (true) {
+            System.out.print("> ");
+            String line = scanner.nextLine().trim();
+            if (line.isEmpty()) break;
+
+            String[] parts = line.split("\\s+");
+            for (String p : parts) {
+                try {
+                    tree.insert(Integer.parseInt(p));
+                } catch (NumberFormatException e) {
+                    System.out.println("Пропущено некоректне значення: " + p);
+                }
+            }
+        }
+    }
+}
