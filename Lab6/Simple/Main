@@ -1,0 +1,60 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Translator translator = new Translator();
+
+        translator.addWord("hello", "привіт");
+        translator.addWord("world", "світ");
+        translator.addWord("good", "добрий");
+        translator.addWord("morning", "ранок");
+        translator.addWord("cat", "кіт");
+        translator.addWord("dog", "пес");
+        translator.addWord("house", "будинок");
+        translator.addWord("love", "любов");
+        translator.addWord("book", "книга");
+        translator.addWord("friend", "друг");
+
+        System.out.println("Перекладач EN -> UA ");
+        System.out.println("До словника завантажено " + translator.size() + " слів.");
+
+        System.out.print("Бажаєте додати власні слова? (так/ні): ");
+        String answer = scanner.nextLine().trim().toLowerCase();
+
+        if (answer.equals("так") || answer.equals("yes") || answer.equals("y")) {
+            System.out.println("Введіть пари слів у форматі: <англійське> <українське>");
+            System.out.println("Порожній рядок — завершити введення.");
+
+            while (true) {
+                System.out.print("> ");
+                String line = scanner.nextLine().trim();
+                if (line.isEmpty()) {
+                    break;
+                }
+
+                String[] parts = line.split("\\s+", 2);
+                if (parts.length < 2) {
+                    System.out.println("Потрібно ввести два слова через пробіл.");
+                    continue;
+                }
+                translator.addWord(parts[0], parts[1]);
+                System.out.println("Додано: " + parts[0] + " -> " + parts[1]);
+            }
+        }
+
+        translator.printDictionary();
+
+        System.out.println("\nВведіть фразу англійською для перекладу:");
+        System.out.print("> ");
+        String phrase = scanner.nextLine();
+
+        String translated = translator.translate(phrase);
+
+        System.out.println("\nОригінал: " + phrase);
+        System.out.println("Переклад: " + translated);
+        System.out.println("\n(Слова у квадратних дужках відсутні у словнику)");
+
+        scanner.close();
+    }
+}
